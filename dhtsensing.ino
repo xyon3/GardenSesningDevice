@@ -30,7 +30,9 @@ String scannedNetworks = "";
 // String serverUrl = "http://192.168.18.76:3000/api/xyon3API/";
 String serverUrl = "https://garden-sensing.vercel.app/api/xyon3API/";
 
+// States
 unsigned int isActive = 0;
+String deviceIP = "";
 
 
 SenseData retrieveDataFromSensor() {
@@ -55,7 +57,7 @@ void actionRegisterDhtSensor(String ip, String deviceName) {
     requestBody += "\",\"dnm\":\"";
     requestBody += deviceName;
     requestBody += "\",\"sts\":";
-    requestBody += 0;
+    requestBody += isActive;
     requestBody += ",\"did\":\"";
     requestBody += SENSOR_ID;
     requestBody += "\"}";
@@ -115,10 +117,13 @@ void handlePingDevice() {
 
 void handleToggleActivivty() {
   isActive = !isActive;
-    String requestBody = "";
-    requestBody += "{\"sts\":\"";
-    requestBody += isActive;
-    requestBody += "\"}";
+
+  actionRegisterDhtSensor(deviceIP, SENSOR_ID);
+
+  String requestBody = "";
+  requestBody += "{\"sts\":\"";
+  requestBody += isActive;
+  requestBody += "\"}";
   server.send(200, "application/json", requestBody);
 }
 
@@ -171,7 +176,10 @@ void handleConnectWifi() {
     }
     if (WiFi.status() == WL_CONNECTED) {
       // Save ssid & pass in EEPROM
-      actionRegisterDhtSensor(WiFi.localIP().toString(), SENSOR_ID);
+
+      deviceIP = WiFi.localIP().toString();
+
+      actionRegisterDhtSensor(deviceIP, SENSOR_ID);
       writeDataROM(ssid, pass, key);
 
       Serial.println("\nConnected!");
