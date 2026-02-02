@@ -27,7 +27,6 @@ WiFiClientSecure client;
 
 
 String scannedNetworks = "";
-// String serverUrl = "http://192.168.18.76:3000/api/xyon3API/";
 String serverUrl = "https://garden-sensing.vercel.app/api/xAPI/";
 
 unsigned int isActive = 0;
